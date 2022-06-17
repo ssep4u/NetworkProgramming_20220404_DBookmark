@@ -1,4 +1,4 @@
-from django.contrib.auth import logout, authenticate, login
+from django.contrib.auth import logout, authenticate, login, REDIRECT_FIELD_NAME
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
@@ -24,7 +24,7 @@ def my_login(request):
         user = authenticate(username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('bookmark:list')
+            return redirect(request.GET.get(REDIRECT_FIELD_NAME) or 'bookmark:list')
         else:
             return render(request, 'accounts/login_fail.html')
     else:
