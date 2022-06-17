@@ -14,6 +14,8 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 import dj_database_url
+from django.shortcuts import resolve_url
+from django.urls import reverse
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -142,3 +144,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # MEDIA(사용자가 업로드한 파일)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')  #업로드한 파일 위치
+
+# Login
+LOGIN_URL = '/accounts/login/'

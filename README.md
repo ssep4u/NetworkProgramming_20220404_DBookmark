@@ -71,3 +71,5 @@
     - 로그인 요구하기
       - FBV: @login_required
       - CBV: (LoginRequiredMixin)
+    - 로그인 요구할 때, 이동할 로그인 URL
+      - settings LOGIN_URL
