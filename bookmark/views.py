@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 
@@ -50,3 +51,15 @@ class BookmarkUpdateView(LoginRequiredMixin, UpdateView):
 class BookmarkDeleteView(LoginRequiredMixin, DeleteView):
     model = Bookmark
     success_url = reverse_lazy('bookmark:list')
+
+
+def list_bookmark(request):
+    # 로그인 사용자 확인하자
+    user = request.user
+    if user.is_authenticated:    # 로그인 되어있으면
+        profile = Profile.objects.get(user=user)
+        bookmark_list = Bookmark.objects.filter(profile=profile)  # 그 사용자의 북마크 가져오자
+    else:   # 로그인 안되어 있으면
+        bookmark_list = Bookmark.objects.none()    # 북마크 없는것 가져오자
+
+    return render(request, 'bookmark/bookmark_list.html', {'bookmark_list': bookmark_list})
