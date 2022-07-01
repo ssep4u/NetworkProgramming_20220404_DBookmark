@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 
 from accounts.models import Profile
-from bookmark.forms import BookmarkCreationForm
+from bookmark.forms import BookmarkCreationForm, BookmarkChangeForm
 from bookmark.models import Bookmark
 
 
@@ -72,6 +72,7 @@ def detail_bookmark(request, pk):
     return render(request, 'bookmark/bookmark_detail.html', {'bookmark': bookmark})
 
 
+@login_required
 def delete_bookmark(request, pk):
     if request.method == 'POST':  # 삭제 버튼 눌렀을 때
         bookmark = Bookmark.objects.get(pk=pk)
@@ -94,3 +95,19 @@ def create_bookmark(request):
     else:  # 빈 폼
         form = BookmarkCreationForm()
     return render(request, 'bookmark/bookmark_create.html', {'form': form})
+
+
+@login_required
+def modify_bookmark(request, pk):
+    if request.method == 'POST':
+        form = BookmarkChangeForm(request.POST)  # form 가져오자
+        if form.is_valid():  # is_valid()
+            bookmark = Bookmark.objects.get(pk=pk)  # pk에 해당하는 bookmark 가져오자
+            bookmark.name = form.cleaned_data.get('name')  # 사용자가 입력한 name set
+            bookmark.url = form.cleaned_data.get('url')  # 사용자가 입력한 url set
+            bookmark.save()
+            return redirect('bookmark:list')  # bookmark:list로 이동하자
+    else:
+        bookmark = Bookmark.objects.get(pk=pk)  # pk에 해당하는 bookmark 정보 가져오자
+        form = BookmarkChangeForm(instance=bookmark)  # bookmark 정보 넣은 form
+    return render(request, 'bookmark/bookmark_update.html', {'form': form})
